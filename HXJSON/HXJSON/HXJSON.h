@@ -8,6 +8,16 @@
 
 #import <Foundation/Foundation.h>
 
+typedef NS_ENUM(NSInteger, HXJSONType) {
+    HXJSONNumber,
+    HXJSONString,
+    HXJSONBOOL,
+    HXJSONArray,
+    HXJSONDictionary,
+    HXJSONNull,
+    HXJSONUnknow
+};
+
 @interface HXJSONError: NSError
 
 @property (nonatomic, strong, readonly, class) HXJSONError * UnSupportedType;
@@ -23,8 +33,16 @@
 
 @interface HXJSON : NSObject
 
+#pragma mark  properties 
+
 @property (nonatomic, strong) id object;
-@property (nonatomic, strong, readwrite, nullable) HXJSONError * error;
+@property (nonatomic, assign, readonly) HXJSONType type;
+@property (nonatomic, strong, readonly, nullable) HXJSONError * error;
+
+@property (nonatomic, strong, class, readonly) HXJSON * nullJSON;
+@property (nonatomic, strong, class, readonly) HXJSON * null;
+
+#pragma mark  init 
 
 + (instancetype)jsonWithObject:(id)object;
 + (instancetype)jsonWithString:(NSString *)jsonString;
@@ -33,5 +51,15 @@
 - (instancetype)initWithObject:(id)object;
 - (instancetype)initWithJSON:(NSString *)jsonString;
 - (instancetype)initWithData:(NSData *)data options:(NSJSONReadingOptions)options;
+
+#pragma mark  Array 
+
+
+
+@end
+
+@interface NSNumber (HXNumberType)
+
+@property (nonatomic, assign, readonly) BOOL isBool;
 
 @end

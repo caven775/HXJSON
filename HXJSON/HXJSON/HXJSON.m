@@ -16,6 +16,28 @@ typedef NS_ENUM(NSInteger, HXJSONErrorType) {
     HXJSONErrorInvalidJSON = 490
 };
 
+id hxUnwrap(id object)
+{
+    if ([object isKindOfClass:[HXJSON class]]) {
+        return hxUnwrap([(HXJSON *)object object]);
+    } else if ([object isKindOfClass:[NSArray class]]) {
+        NSMutableArray * unwrapArray = [[NSMutableArray alloc] initWithCapacity:0];
+        [(NSArray *)object enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            [unwrapArray addObject:hxUnwrap(obj)];
+        }];
+        return unwrapArray;
+    } else if ([object isKindOfClass:[NSDictionary class]]) {
+        NSMutableDictionary * unwrapDictionary = [[NSMutableDictionary alloc] init];
+        [(NSDictionary *)object enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+            unwrapDictionary[key] = hxUnwrap(obj);
+        }];
+        return unwrapDictionary;
+    }
+    return object;
+}
+
+#pragma mark  HXJSONError 
+
 @implementation HXJSONError
 
 + (instancetype)errorWithCode:(NSInteger)code reason:(NSString *)reason
@@ -40,7 +62,36 @@ typedef NS_ENUM(NSInteger, HXJSONErrorType) {
 
 @end
 
+
+#pragma mark  HXJSON 
+
+@interface HXJSON ()
+{
+    id _object;
+}
+
+@property (nonatomic, strong) NSArray * rawArray;
+@property (nonatomic, strong) NSDictionary * rawDctionary;
+@property (nonatomic, copy) NSString * rawString;
+@property (nonatomic, assign) BOOL rawBool;
+@property (nonatomic, strong) NSNumber * rawNumber;
+@property (nonatomic, strong) NSNull * rawNull;
+
+@end
+
 @implementation HXJSON
+
+@dynamic object;
+
++ (HXJSON *)nullJSON
+{
+    return [HXJSON null];
+}
+
++ (HXJSON *)null
+{
+    return [[self alloc] _initWithObject:[NSNull null]];
+}
 
 + (instancetype)jsonWithObject:(id)object
 {
@@ -76,10 +127,74 @@ typedef NS_ENUM(NSInteger, HXJSONErrorType) {
 {
     self = [super init];
     if (self) {
+        if (!object) { object = [NSNull null];}
         self.object = object;
     }
     return self;
 }
 
+- (void)setObject:(id)object
+{
+    _object = object;
+    id x = hxUnwrap(_object);
+    if ([x isKindOfClass:[NSNull class]] || !x) {
+        _type = HXJSONNull;
+        self.rawNull = (NSNull *)x;
+    } else if ([x isKindOfClass:[NSNumber class]]) {
+        if ([(NSNumber *)x isBool]) {
+            _type = HXJSONBOOL;
+            self.rawBool = [(NSNumber *)x boolValue];
+        } else {
+            _type = HXJSONNumber;
+            self.rawNumber = (NSNumber *)x;
+        }
+    } else if ([x isKindOfClass:[NSString class]]) {
+        _type = HXJSONString;
+        self.rawString = (NSString *)x;
+    } else if ([x isKindOfClass:[NSArray class]]) {
+        _type = HXJSONArray;
+        self.rawArray = (NSArray *)x;
+    } else if ([x isKindOfClass:[NSDictionary class]]) {
+        _type = HXJSONDictionary;
+        self.rawDctionary = (NSDictionary *)x;
+    } else {
+        _type = HXJSONUnknow;
+        _error = [HXJSONError UnSupportedType];
+    }
+}
+
+- (id)object
+{
+    switch (self.type) {
+        case HXJSONNumber: { return self.rawNumber; break;}
+        case HXJSONBOOL: { return @(self.rawBool); break;}
+        case HXJSONString: { return self.rawString; break;}
+        case HXJSONArray: { return self.rawArray; break;}
+        case HXJSONDictionary: { return self.rawDctionary; break;}
+        case HXJSONNull: { return self.rawNull; break;}
+        default: {return self.rawNull; break;}
+    }
+}
+
+@end
+
+
+#pragma mark  NSNumber 
+
+@implementation NSNumber (HXNumberType)
+
+- (BOOL)isBool
+{
+    NSNumber * tureNumber = @(YES);
+    NSNumber * falseNumber = @(NO);
+    NSString * objctype = [NSString stringWithCString:self.objCType encoding:NSUTF8StringEncoding];
+    NSString * tureObjcType = [NSString stringWithCString:tureNumber.objCType encoding:NSUTF8StringEncoding];
+    NSString * falseObjcType = [NSString stringWithCString:falseNumber.objCType encoding:NSUTF8StringEncoding];
+    if (([self compare:tureNumber] == NSOrderedSame && objctype == tureObjcType) ||
+        ([self compare:falseNumber] == NSOrderedSame && objctype == falseObjcType)) {
+        return YES;
+    }
+    return NO;
+}
 
 @end

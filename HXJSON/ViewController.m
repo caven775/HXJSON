@@ -7,6 +7,7 @@
 //
 
 #import "ViewController.h"
+#import "HXJSON.h"
 
 @interface ViewController ()
 
@@ -18,12 +19,14 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     
-    
+    HXJSON * json = [HXJSON jsonWithObject:nil];
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
-    
+    NSNumber * x = @(10);
+    NSLog(@" === %d", [x isBool]);
+//    @en
 }
 
 
