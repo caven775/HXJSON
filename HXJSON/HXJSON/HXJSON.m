@@ -36,6 +36,11 @@ id hxUnwrap(id object)
     return object;
 }
 
+HXJSON * hxJSONInstance(id object)
+{
+    return [[HXJSON alloc] initWithObject:object];
+}
+
 #pragma mark  HXJSONError 
 
 @implementation HXJSONError
@@ -175,6 +180,85 @@ id hxUnwrap(id object)
         default: {return self.rawNull; break;}
     }
 }
+
+#pragma mark  Array 
+
+- (NSArray<HXJSON *> *)array
+{
+    if (self.type == HXJSONArray) {
+        NSMutableArray <HXJSON *>* mutableArray = [[NSMutableArray alloc] initWithCapacity:0];
+        [self.rawArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            [mutableArray addObject:hxJSONInstance(obj)];
+        }];
+        return mutableArray;
+    }
+    return nil;
+}
+
+- (NSArray<HXJSON *> *)arrayValue
+{
+    return self.array ? self.array : @[];
+}
+
+- (NSArray<id> *)arrayObject
+{
+    return (self.type == HXJSONArray) ? self.rawArray : nil;
+}
+
+#pragma mark  Dictionary 
+
+- (NSDictionary<NSString *,HXJSON *> *)dictionary
+{
+    if (self.type == HXJSONDictionary) {
+        NSMutableDictionary <NSString *, HXJSON *>* dictionary = [[NSMutableDictionary alloc] initWithCapacity:0];
+        [self.rawDctionary enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+            dictionary[key] = hxJSONInstance(obj);
+        }];
+        return dictionary;
+    }
+    return nil;
+}
+
+- (NSDictionary<NSString *,HXJSON *> *)dictionaryValue
+{
+    return self.dictionary ? self.dictionary : @{};
+}
+
+- (NSDictionary<NSString *,id> *)dictionaryObject
+{
+    return (self.type == HXJSONDictionary) ? self.rawDctionary : nil;
+}
+
+#pragma mark  String 
+
+- (NSString *)string
+{
+    return (self.type == HXJSONString) ? self.rawString : nil;
+}
+
+- (void)setString:(NSString *)string
+{
+    self.object = string ? [NSString stringWithString:string] : [NSNull null];
+}
+
+- (NSString *)stringValue
+{
+    if (self.type == HXJSONString) {
+        return self.rawString ? self.rawString : @"";
+    } else if (self.type == HXJSONNumber) {
+        return [self.rawNumber stringValue];
+    } else if (self.type == HXJSONBOOL) {
+        return self.rawBool ? @"YES" : @"NO";
+    }
+    return @"";
+}
+
+#pragma mark  Number 
+
+- (double)doubleValue { return self.rawNumber.doubleValue;}
+- (float)floatValue { return self.rawNumber.floatValue;}
+- (int)intValue { return self.rawNumber.intValue;}
+
 
 @end
 

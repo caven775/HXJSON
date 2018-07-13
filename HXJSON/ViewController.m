@@ -19,14 +19,15 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     
-    HXJSON * json = [HXJSON jsonWithObject:nil];
+    
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
-    NSNumber * x = @(10);
-    NSLog(@" === %d", [x isBool]);
-//    @en
+    HXJSON * json = [HXJSON jsonWithObject:@[@"111"]];
+    [json.array enumerateObjectsUsingBlock:^(HXJSON * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSLog(@"obj == %@", obj.object);
+    }];
 }
 
 

@@ -54,6 +54,40 @@ typedef NS_ENUM(NSInteger, HXJSONType) {
 
 #pragma mark  Array 
 
+@property (nonatomic, strong, nullable) NSArray <HXJSON *>* array;
+@property (nonatomic, strong, nonnull, readonly) NSArray <HXJSON *> * arrayValue;
+@property (nonatomic, strong, nullable) NSArray <id>* arrayObject;
+
+#pragma mark  Dictionary 
+
+@property (nonatomic, strong, nullable) NSDictionary <NSString *, HXJSON *>* dictionary;
+@property (nonatomic, strong, nonnull, readonly) NSDictionary <NSString *, HXJSON *>* dictionaryValue;
+@property (nonatomic, strong, nullable) NSDictionary <NSString *, id>* dictionaryObject;
+
+#pragma mark  String 
+
+@property (nonatomic, nullable) NSString * string;
+@property (nonatomic, nonnull, readonly) NSString * stringValue;
+
+#pragma mark  Number 
+
+//@property (readonly) char charValue;
+//@property (readonly) unsigned char unsignedCharValue;
+//@property (readonly) short shortValue;
+//@property (readonly) unsigned short unsignedShortValue;
+//@property (readonly) int intValue;
+//@property (readonly) unsigned int unsignedIntValue;
+//@property (readonly) long longValue;
+//@property (readonly) unsigned long unsignedLongValue;
+//@property (readonly) long long longLongValue;
+//@property (readonly) unsigned long long unsignedLongLongValue;
+//@property (readonly) float floatValue;
+//@property (readonly) double doubleValue;
+//@property (readonly) BOOL boolValue;
+
+@property (nonatomic, readonly) double doubleValue;
+@property (nonatomic, readonly) float floatValue;
+@property (nonatomic, readonly) int intValue;
 
 
 @end
