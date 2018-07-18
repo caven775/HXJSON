@@ -39,8 +39,8 @@ typedef NS_ENUM(NSInteger, HXJSONType) {
 @property (nonatomic, assign, readonly) HXJSONType type;
 @property (nonatomic, strong, readonly, nullable) HXJSONError * error;
 
-@property (nonatomic, strong, class, readonly) HXJSON * nullJSON;
 @property (nonatomic, strong, class, readonly) HXJSON * null;
+@property (nonatomic, strong, class, readonly) HXJSON * nullJSON;
 
 #pragma mark  init 
 
@@ -71,24 +71,24 @@ typedef NS_ENUM(NSInteger, HXJSONType) {
 
 #pragma mark  Number 
 
-//@property (readonly) char charValue;
-//@property (readonly) unsigned char unsignedCharValue;
-//@property (readonly) short shortValue;
-//@property (readonly) unsigned short unsignedShortValue;
-//@property (readonly) int intValue;
-//@property (readonly) unsigned int unsignedIntValue;
-//@property (readonly) long longValue;
-//@property (readonly) unsigned long unsignedLongValue;
-//@property (readonly) long long longLongValue;
-//@property (readonly) unsigned long long unsignedLongLongValue;
-//@property (readonly) float floatValue;
-//@property (readonly) double doubleValue;
-//@property (readonly) BOOL boolValue;
-
 @property (nonatomic, readonly) double doubleValue;
 @property (nonatomic, readonly) float floatValue;
 @property (nonatomic, readonly) int intValue;
+@property (nonatomic, readonly) BOOL boolValue;
+@property (nonatomic, readonly) char charValue;
+@property (nonatomic, readonly) unsigned char unsignedCharValue;
+@property (nonatomic, readonly) unsigned int unsiginedIntlValue;
+@property (nonatomic, readonly) short shortValue;
+@property (nonatomic, readonly) unsigned short unsignedShortValue;
+@property (nonatomic, readonly) long longValue;
+@property (nonatomic, readonly) unsigned long unsignLongValue;
+@property (nonatomic, readonly) long long longLongValue;
+@property (nonatomic, readonly) unsigned long long unsignedLongLongValue;
+@property (nonatomic, readonly) NSInteger integerValue;
+@property (nonatomic, readonly) NSUInteger unsignedIntegerValue;
 
+#pragma mark  Subscript 
+- (HXJSON *)objectAtIndexedSubscript:(NSUInteger)idx;
 
 @end
 

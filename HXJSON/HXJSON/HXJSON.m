@@ -258,6 +258,35 @@ HXJSON * hxJSONInstance(id object)
 - (double)doubleValue { return self.rawNumber.doubleValue;}
 - (float)floatValue { return self.rawNumber.floatValue;}
 - (int)intValue { return self.rawNumber.intValue;}
+- (BOOL)boolValue { return self.rawNumber.boolValue;}
+- (char)charValue { return self.rawNumber.charValue;}
+- (unsigned char)unsignedCharValue { return self.rawNumber.unsignedCharValue;}
+- (unsigned int)unsiginedIntlValue { return self.rawNumber.unsignedIntValue;}
+- (short)shortValue { return self.rawNumber.shortValue;}
+- (unsigned short)unsignedShortValue { return self.rawNumber.unsignedShortValue;}
+- (long)longValue { return self.rawNumber.longValue;}
+- (long long)longLongValue { return self.rawNumber.longLongValue;}
+- (unsigned long)unsignLongValue { return self.rawNumber.unsignedLongValue;}
+- (unsigned long long)unsignedLongLongValue { return self.rawNumber.unsignedLongLongValue;}
+- (NSInteger)integerValue { return self.rawNumber.integerValue;}
+- (NSUInteger)unsignedIntegerValue { return self.rawNumber.unsignedIntegerValue;}
+
+#pragma mark  Subscript 
+
+- (HXJSON *)objectAtIndexedSubscript:(NSUInteger)idx
+{
+    if (self.type == HXJSONArray) {
+        if (idx < self.arrayValue.count) {
+            return self.arrayValue[idx];
+        }
+        _error = [HXJSONError errorWithCode:-10000 reason:@"out of bounds"];
+        return [HXJSON null];
+    }
+    _error = [HXJSONError WrongType];
+    return [HXJSON null];
+}
+
+
 
 
 @end
